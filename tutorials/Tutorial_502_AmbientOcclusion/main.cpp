@@ -34,19 +34,22 @@
 
 int main(int /*argc*/, char** /*argv*/) {
     // Create the viewer.
-    TutorialAmbientOcclusion viewer("Tutorial_402_AmbientOcclusion");
+    TutorialAmbientOcclusion viewer("Tutorial_502_AmbientOcclusion");
 
     const std::string file = "../../Easy3D/data/house.obj";
     easy3d::Model* model = viewer.open(file);
     if (model) {
         auto drawable = model->triangles_drawable("surface");
         drawable->set_default_color(easy3d::vec3(0.6f, 0.6f, 1.0f));
+
+        // Run the viewer
+        viewer.run();
+
+        return EXIT_SUCCESS;
     }
-    else
-        std::cerr << "Error: failed load mesh. Please make sure the file exists and format is correct." << std::endl;
 
-	// Run the viewer
-    viewer.run();
-
-    return EXIT_SUCCESS;
+    else {
+        std::cerr << "Error: failed to load model. Please make sure the file exists and format is correct." << std::endl;
+        return EXIT_FAILURE;
+    }
 }

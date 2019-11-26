@@ -1040,7 +1040,7 @@ namespace easy3d {
             if (colors)
                 surface->update_color_buffer(vertex_colors);
             surface->release_index_buffer();
-#else
+#else   // smooth shading
             auto points = mesh->get_vertex_property<vec3>("v:point");
             surface->update_vertex_buffer(points.vector());
             auto colors = mesh->get_vertex_property<vec3>("v:color");
@@ -1109,7 +1109,6 @@ namespace easy3d {
             auto points = cloud->get_vertex_property<vec3>("v:point");
             for (auto v : cloud->vertices())
                 box.add_point(points[v]);
-            model->set_bounding_box(box);
         }
         else if (dynamic_cast<SurfaceMesh*>(model)) {
             SurfaceMesh* mesh = dynamic_cast<SurfaceMesh*>(model);
@@ -1318,7 +1317,6 @@ namespace easy3d {
 			draw_corner_axes();
 
         if (show_pivot_point_) {
-
             ShaderProgram* program = ShaderManager::get_program("lines_color");
             if (!program) {
                 std::vector<ShaderProgram::Attribute> attributes;

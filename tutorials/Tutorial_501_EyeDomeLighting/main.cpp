@@ -35,7 +35,7 @@
 
 int main(int /*argc*/, char** /*argv*/) {
     // Create the viewer.
-    TutorialEyeDomeLighting viewer("Tutorial_401_EyeDomeLighting");
+    TutorialEyeDomeLighting viewer("Tutorial_501_EyeDomeLighting");
 
     // Read the point cloud from a known file.
     const std::string file = "../../Easy3D/data/bunny_without_normals.bin";
@@ -44,13 +44,16 @@ int main(int /*argc*/, char** /*argv*/) {
         auto drawable = model->points_drawable("vertices");
         drawable->set_point_size(5.0f);
         drawable->set_default_color(easy3d::vec3(0.6f, 0.6f, 1.0f));
+
+        // Run the viewer
+        viewer.run();
+
+        return EXIT_SUCCESS;
     }
-    else
+    else {
         std::cerr << "Error: failed load point cloud. Please make sure the file exists and format is correct." << std::endl;
+        return EXIT_FAILURE;
+    }
 
-	// Run the viewer
-    viewer.run();
-
-    return EXIT_SUCCESS;
 }
 

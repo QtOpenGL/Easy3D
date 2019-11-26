@@ -76,7 +76,6 @@ namespace easy3d {
 
 
 #include <cassert>
-#include <easy3d/core/principal_axes.h>
 #include <easy3d/core/eigen_solver.h>
 
 
@@ -160,6 +159,7 @@ namespace easy3d {
             solver.solve(M_, EigenSolver<FT>::DECREASING);
 
             for (unsigned short i=0; i<DIM; ++i) {
+                eigen_value_[i] = solver.eigen_value(i);
                 for (unsigned short j=0; j<DIM; ++j)
                     axis_[i][j] = solver.eigen_vector(j, i); // eigenvectors are stored in columns
             }

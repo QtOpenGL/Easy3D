@@ -1,6 +1,6 @@
 <img src="images/logo.jpg" width="400">
 
-### Easy3D is an open source library for 3D modeling and geometry processing. It is implemented in C++ and designed with an emphasis on simplicity and efficiency. 
+### Easy3D is an open source library for 3D modeling, geometry processing, and rendering. It is implemented in C++ and designed with an emphasis on simplicity and efficiency. 
 ### Easy3D is intended for research and educational purposes, but it is also a good starting point for developing sophisticated 3D applications.
 
 
@@ -29,16 +29,15 @@ Eye-dome lighting                       |  Shadow  				     |   Transparency
 * A viewer that can be used directly to visualize 3D scenes in various formats, which can also be easily extended.
 * Step-by-step tutorials to get acquainted with the data structures, rendering techniques, and processing algorithms for 3D modeling and geometry processing. 
 
-**Plan for the next release (~August 2019)**
- - KD-Tree
- - Point cloud normal estimation and re-orientation
- - Plane extraction from point clouds
- - Poisson surface reconstruction
- - [PolyFit: Polygonal surface reconstruction](https://github.com/LiangliangNan/PolyFit)
+** In progress and planed for the next release (~Nov. 2019)**
+ - Better documentation (basically more comments in API definition)
  - Textured rendering
- - A viewer based-on Qt
+ - Set line width for LinesDrawable
+ - Line/point imposters
+ - 2D Delaunay triangulation (based on Jonathan Richard Shewchuk's Triangle)
+ - 3D Delaunay triangulation (based on Sihang's Tetgen)
+ - Rendering meshes with concave faces and faces with holes
  - and more ...
-
  
 ### A quick glance ###
 
@@ -71,14 +70,15 @@ Any types of 3D drawables (e.g., points, lines, triangles, and thus point clouds
 
 Bellow is another example showing how to render a surface model (the result is in Figure 2).
 ```c++
-	SurfaceMesh* mesh = new SurfaceMesh;	// create a surface mesh
+        // create a surface mesh
+        SurfaceMesh* mesh = new SurfaceMesh;
 	
 	// create a drawable for rendering the surface of this model
 	TrianglesDrawable* drawable = mesh->add_triangles_drawable("surface");
 
 	// transfer vertex coordinates and colors to the GPU. 
-	drawable->update_vertex_buffer(demodata::vertices);	// an array of 3D points
-	drawable->update_color_buffer(demodata::colors); 	// an array of colors
+        drawable->update_vertex_buffer(vertices);	// an array of 3D points
+        drawable->update_color_buffer(colors); 		// an array of colors
 	
 	drawable->set_per_vertex_color(true);	// vertices have different colors
 
@@ -107,11 +107,13 @@ found in the accompanying 'License' file.
 ### Citation
 If Easy3D is useful in your research/work, I would be grateful if you show your appreciation by citing it:
 ```
-Liangliang Nan. 
-Easy3D: a lightweight, easy-to-use, and efficient C++ library for processing and rendering 3D data. 
-2018.
+@misc{easy3d2018nan,
+  title={Easy3D: a lightweight, easy-to-use, and efficient C++ library for processing and rendering 3D data},
+  author={Liangliang, Nan},
+  howpublished={\url{https://github.com/LiangliangNan/Easy3D}},
+  year={2018},
+}
 ```
-
 ---
 
 Should you have any questions, comments, or suggestions, please contact me at liangliang.nan@gmail.com

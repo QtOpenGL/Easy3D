@@ -5,13 +5,12 @@ project(${PROJECT_NAME})
 
 
 set(${PROJECT_NAME}_HEADERS
+    chrono_watch.h
     dialogs.h
     file.h
     line_stream.h
-    chrono_watch.h
     stop_watch.h
     string.h
-    thread.h
     timer.h
     )
 
@@ -26,10 +25,13 @@ set(${PROJECT_NAME}_SOURCES
 	
 add_library(${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS} )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Easy3D")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "easy3d")
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${EASY3D_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${EASY3D_glog_INCLUDE_DIR})
 
 find_package(Threads REQUIRED)
 target_link_libraries(${PROJECT_NAME} Threads::Threads)
+
+if (MSVC)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS _CRT_SECURE_NO_DEPRECATE)
+endif()

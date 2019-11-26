@@ -72,6 +72,7 @@ bool RealCamera::key_press_event(int key, int modifiers) {
             current_view_ = (current_view_ + 1) % views_.size();
             if (KRT_to_camera(current_view_, 2, camera())) {
                 std::cout << "----- view " << current_view_ << " ------" << std::endl;
+                set_title("RealCamera: View_" + std::to_string(current_view_));
                 const CameraPara& c = views_[current_view_];
                 // make sure the aspect ratio (actual size does not matter)
                 resize(c.w * 0.25, c.h * 0.25);
@@ -124,18 +125,10 @@ bool RealCamera::KRT_to_camera(std::size_t view_index, int method, Camera* c) {
     }
     
     const CameraPara& cam = views_[view_index];
-    
-#if 0 // use the ground truth camera intrinsic parameters
-    float fx = 2759.48f;
-    float fy = 2764.16f;
-    float cx = 1520.69f;
-    float cy = 1006.81f;
-#else // use the camera intrinsic parameters computed from bundler
     float fx = cam.fx;
     float fy = cam.fy;
     float cx = cam.cx;
     float cy = cam.cy;
-#endif
     
     if (method == 1) {
         c->set_from_calibration(

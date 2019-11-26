@@ -13,9 +13,10 @@ add_subdirectory("Tutorial_204_Mesh_IO")
 
 # viewer & drawing
 add_subdirectory("Tutorial_301_Viewer")
-add_subdirectory("Tutorial_302_Viewer_ImGui")
+add_subdirectory("Tutorial_302_Viewer_imgui")
 add_subdirectory("Tutorial_303_Viewer_Qt")
 add_subdirectory("Tutorial_304_RealCamera")
+add_subdirectory("Tutorial_305_DepthImage")
 
 # basic rendering
 add_subdirectory("Tutorial_401_Drawable")
@@ -30,3 +31,7 @@ add_subdirectory("Tutorial_503_HardShadow")
 add_subdirectory("Tutorial_504_SoftShadow")
 add_subdirectory("Tutorial_505_Transparency")
 
+# point cloud algorithms
+add_subdirectory("Tutorial_601_PointCloud_NormalEstimation")
+add_subdirectory("Tutorial_602_PointCloud_SurfaceReconstruction")
+add_subdirectory("Tutorial_603_PointCloud_PlaneExtraction")

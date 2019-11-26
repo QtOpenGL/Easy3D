@@ -34,19 +34,22 @@
 
 int main(int /*argc*/, char** /*argv*/) {
     // Create the viewer.
-    TutorialHardShadow viewer("Tutorial_403_HardShadow");
+    TutorialHardShadow viewer("Tutorial_503_HardShadow");
 
     const std::string file = "../../Easy3D/data/room.obj";
     easy3d::Model* model = viewer.open(file);
     if (model) {
         auto drawable = model->triangles_drawable("surface");
         drawable->set_default_color(easy3d::vec3(0.9f, 0.9f, 0.9f));
+
+        // Run the viewer
+        viewer.run();
+
+        return EXIT_SUCCESS;
     }
-    else
-        std::cerr << "Error: failed load model." << std::endl;
 
-	// Run the viewer
-    viewer.run();
-
-    return EXIT_SUCCESS;
+    else {
+        std::cerr << "Error: failed to load model. Please make sure the file exists and format is correct." << std::endl;
+        return EXIT_FAILURE;
+    }
 }

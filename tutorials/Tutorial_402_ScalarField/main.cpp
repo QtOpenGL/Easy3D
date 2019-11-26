@@ -57,7 +57,7 @@ SurfaceMesh* old_mesh_from_previous_example() {
 	// Upload the vertex positions to the GPU.
 	surface_drawable->update_vertex_buffer(points);
 
-    // computer vertex normals for each vertex
+    // compute vertex normals for each vertex
     mesh->update_vertex_normals();
     // The "normal" property
     auto normals = mesh->get_vertex_property<vec3>("v:normal");
@@ -91,14 +91,16 @@ SurfaceMesh* old_mesh_from_previous_example() {
 int main(int /*argc*/, char** /*argv*/) {
 	// Create the default Easy3D viewer.
 	// Note: a viewer must be created before creating any drawables. 
-    Viewer viewer("Tutorial_303_ScalarFields");
+    Viewer viewer("Tutorial_402_ScalarField");
 
 	// Load a mesh model and create a drawable for the faces. 
 	SurfaceMesh* mesh = old_mesh_from_previous_example();
-	if (!mesh)
+    if (!mesh) {
+        std::cerr << "Error: failed to load model. Please make sure the file exists and format is correct." << std::endl;
         return EXIT_FAILURE;
+    }
 
-	// In the previous tutorial, we render the model using a uniform color.
+    // By default, Easy3D renders the model using a uniform color.
 	// In this tutorial, let's define a scalar field on the mesh vertices: elevation. 
 	// This is actually the z-value of each vertex.
 	auto elevation = mesh->add_vertex_property<float>("v:elevation");

@@ -1,31 +1,30 @@
-﻿/*
-*	Copyright (C) 2015 by Liangliang Nan (liangliang.nan@gmail.com)
-*	https://3d.bk.tudelft.nl/liangliang/
-*
-*	This file is part of Easy3D. If it is useful in your research/work, 
-*   I would be grateful if you show your appreciation by citing it:
-*   ------------------------------------------------------------------
-*           Liangliang Nan. 
-*           Easy3D: a lightweight, easy-to-use, and efficient C++ 
-*           library for processing and rendering 3D data. 2018.
-*   ------------------------------------------------------------------
-*
-*	Easy3D is free software; you can redistribute it and/or modify
-*	it under the terms of the GNU General Public License Version 3
-*	as published by the Free Software Foundation.
-*
-*	Easy3D is distributed in the hope that it will be useful,
-*	but WITHOUT ANY WARRANTY; without even the implied warranty of
-*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*	GNU General Public License for more details.
-*
-*	You should have received a copy of the GNU General Public License
-*	along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+﻿/**
+ * Copyright (C) 2015 by Liangliang Nan (liangliang.nan@gmail.com)
+ * https://3d.bk.tudelft.nl/liangliang/
+ *
+ * This file is part of Easy3D. If it is useful in your research/work,
+ * I would be grateful if you show your appreciation by citing it:
+ * ------------------------------------------------------------------
+ *      Liangliang Nan.
+ *      Easy3D: a lightweight, easy-to-use, and efficient C++
+ *      library for processing and rendering 3D data. 2018.
+ * ------------------------------------------------------------------
+ * Easy3D is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License Version 3
+ * as published by the Free Software Foundation.
+ *
+ * Easy3D is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 
-#ifndef EASY3D_VEC_H
-#define EASY3D_VEC_H
+#ifndef EASY3D_CORE_VEC_H
+#define EASY3D_CORE_VEC_H
 
 #include <cassert>
 #include <iostream>
@@ -37,15 +36,27 @@
 namespace easy3d {
 
 #if 1
+
+    /**
+     * \brief Base class for vector types. It provides generic functionality for \p N dimensional vectors.
+     * \tparam N The dimension/size of a vector.
+     * \tparam T The scalar type of vector elements.
+     *
+     * \class Vec easy3d/core/vec.h
+     */
     template <size_t N, class T>
     class Vec {
     public:
-        typedef Vec<N, T> thisclass;
+        typedef Vec<N, T>   thisclass;
+        typedef T           FT;
 
+        /// \brief Default constructor. All elements will be initialized to zero.
         Vec() { for (size_t i = 0; i < N; i++) { data_[i] = T(0); } }
 
+        /// \brief Constructs a vector from a scalar number \p s. All elements will be initialized to this value.
         explicit Vec(const T& s) { for (size_t i = 0; i < N; i++) { data_[i] = s; } }
 
+        /// \brief Constructs a vector from another vector of the same dimension/size.
         // This one should never be called : a template constructor cannot be a copy constructor
         template<class T2> explicit Vec(const Vec<N, T2>& rhs) {
             for (size_t i = 0; i < N; i++) {
@@ -53,6 +64,7 @@ namespace easy3d {
             }
         }
 
+        /// \brief Constructs a vector from another vector of the same dimension/size.
         // to avoid compilation problems
         template<class T2, size_t M> explicit Vec(const Vec<M, T2>& rhs) {
             assert(M == N);
@@ -60,40 +72,51 @@ namespace easy3d {
                 data_[i] = T(rhs[i]);
             }
         }
+
+        /// \brief Constructs a vector from an array of values.
         template<class T2> explicit Vec(const T2* rhs) {
             for (size_t i = 0; i < N; i++) {
                 data_[i] = T(rhs[i]);
             }
         }
 
+        /// \brief Assignment operator. It assigns the value of this vector from another vector.
         thisclass& operator=(const thisclass& rhs) {
             memcpy(data_, rhs.data(), N*sizeof(T));
             return *this;
         }
 
+        /// \brief Returns the dimension/size of this vector.
         size_t dimension() const { return (size_t)N; }
+        /// \brief Returns the dimension/size of this vector.
         size_t size() const { return dimension(); }
 
-        // returns the memory address of the vector.
+        /// \brief Returns the memory address of the vector.
         T* data()             { return data_; }
+        /// \brief Returns the constant memory address of the vector.
         const T* data() const { return data_; }
 
-        // Conversion operator returning the memory address of the data.
-        // Very convenient to pass the data pointer as a parameter to functions.
-        // e.g., glVertex3fv(pos);
+        /// \brief Conversion operator returning the constant memory address of the data. Very convenient to pass this
+        /// vector as a data pointer to functions, e.g., \code glVertex3fv(pos); \endcode.
         operator const T*() const { return data_; }
+        /// \brief Conversion operator returning the memory address of the data. Very convenient to pass this vector
+        /// as a data pointer to functions, e.g., \code glVertex3fv(pos); \endcode.
         operator T*() { return data_; }
 
-        inline T& operator[](int idx) {
-            assert(idx < N);
-            return data()[idx];
-        }
+		// Liangliang: The compiler can't decide whether to use your overloaded 
+		//			   operator[] or the built-in operator[] on the const T*.
+		// See https://stackoverflow.com/questions/1726740/c-error-operator-2-overloads-have-similar-conversions 
+        //inline T& operator[](size_t idx) {
+        //    assert(idx < N);
+        //    return data()[idx];
+        //}
+		//
+        //inline const T& operator[](size_t idx) const {
+        //    assert(idx < N);
+        //    return data()[idx];
+        //}
 
-        inline const T& operator[](int idx) const {
-            assert(idx < N);
-            return data()[idx];
-        }
-
+        /// \brief Returns the squared length of this vector.
         inline T length2() const {
             T result = T(0);
             for (size_t i = 0; i < N; i++) {
@@ -102,14 +125,17 @@ namespace easy3d {
             return result;
         }
 
+        /// \brief Returns the length of this vector.
         inline T length() const {
             return sqrt(length2());
         }
 
+        /// \brief Returns the norm (i.e., length/magnitude0 of this vector.
         inline T norm() const {
             return length();
         }
 
+        /// \brief Returns the squared Euclidean distance to another vector.
         inline T distance2(const thisclass &rhs) const {
             T result = T(0);
             for (size_t i = 0; i < N; i++) {
@@ -119,6 +145,7 @@ namespace easy3d {
             return result;
         }
 
+        /// \brief Normalizes this vector.
         inline thisclass& normalize() {
             T s = length();
             s = (s > std::numeric_limits<T>::min()) ? T(1.0) / s : T(0.0);
@@ -126,7 +153,7 @@ namespace easy3d {
             return *this;
         }
 
-        // operators
+        /// \brief Compound addition with another vector.
         inline thisclass& operator+=(const thisclass& v) {
             for (size_t i = 0; i < N; i++) {
                 data_[i] += v.data_[i];
@@ -134,6 +161,7 @@ namespace easy3d {
             return *this;
         }
 
+        /// \brief Compound subtraction with another vector.
         inline thisclass& operator-=(const thisclass& v) {
             for (size_t i = 0; i < N; i++) {
                 data_[i] -= v.data_[i];
@@ -141,6 +169,7 @@ namespace easy3d {
             return *this;
         }
 
+        /// \brief Compound component-wise multiplication with another vector.
         inline thisclass& operator*=(const thisclass& v) {
             for (size_t i = 0; i < N; i++) {
                 data_[i] *= v.data_[i];
@@ -148,6 +177,7 @@ namespace easy3d {
             return *this;
         }
 
+        /// \brief Compound component-wise division with another vector.
         inline thisclass& operator/=(const thisclass& v) {
             for (size_t i = 0; i < N; i++) {
                 data_[i] /= v.data_[i];
@@ -155,6 +185,7 @@ namespace easy3d {
             return *this;
         }
 
+        /// \brief Compound vector-scalar multiplication.
         template <class T2> inline thisclass& operator*=(T2 s) {
             for (size_t i = 0; i < N; i++) {
                 data_[i] *= T(s);
@@ -162,6 +193,7 @@ namespace easy3d {
             return *this;
         }
 
+        /// \brief Compound vector-scalar division.
         template <class T2> inline thisclass& operator/=(T2 s) {
             for (size_t i = 0; i < N; i++) {
                 data_[i] /= T(s);
@@ -169,6 +201,7 @@ namespace easy3d {
             return *this;
         }
 
+        /// \brief Addition with another vector.
         inline thisclass operator+ (const thisclass& v) const {
             thisclass result(*this);
             for (size_t i = 0; i < N; i++) {
@@ -177,6 +210,7 @@ namespace easy3d {
             return result;
         }
 
+        /// \brief Subtraction with another vector.
         inline thisclass operator- (const thisclass& v) const {
             thisclass result(*this);
             for (size_t i = 0; i < N; i++) {
@@ -185,6 +219,7 @@ namespace easy3d {
             return result;
         }
 
+        /// \brief Vector-scalar multiplication.
         template <class T2> inline thisclass operator* (T2 s) const {
             thisclass result(*this);
             for (size_t i = 0; i < N; i++) {
@@ -193,6 +228,7 @@ namespace easy3d {
             return result;
         }
 
+        /// \brief Vector-scalar division.
         template <class T2> inline thisclass operator/ (T2 s) const {
             thisclass result(*this);
             for (size_t i = 0; i < N; i++) {
@@ -201,6 +237,7 @@ namespace easy3d {
             return result;
         }
 
+        /// \brief Negates this vector (i.e., adds a \c minus sign).
         inline thisclass operator- () const {
             thisclass result;
             for (size_t i = 0; i < N; i++) {
@@ -275,10 +312,17 @@ namespace easy3d {
 
     //-------------------- vec2 -------------------------------------------------------------------
 
+    /**
+     * \brief A 2D vector (used for representing 2D points or vectors).
+     * \tparam T The scalar type of vector elements.
+     *
+     * \class Vec<2, T> easy3d/core/vec.h
+     */
     template <class T>
     class Vec<2, T> {
     public:
         typedef Vec<2, T> thisclass;
+        typedef T         FT;
 
         Vec() : x(0), y(0) { }
         Vec(T x_in, T y_in) : x(x_in), y(y_in) { }
@@ -335,21 +379,24 @@ namespace easy3d {
         operator const T*() const { return _array; }
         operator T*() { return _array; }
 
-        inline T& operator[](int idx) {
-            assert(idx < 2);
-            return _array[idx];
-        }
-
-        inline const T& operator[](int idx) const {
-            assert(idx < 2);
-            return _array[idx];
-        }
+		// Liangliang: The compiler can't decide whether to use your overloaded 
+		//			   operator[] or the built-in operator[] on the const T*.
+		// See https://stackoverflow.com/questions/1726740/c-error-operator-2-overloads-have-similar-conversions 
+        //inline T& operator[](size_t idx) {
+        //    assert(idx < 2);
+        //    return _array[idx];
+        //}
+		//
+        //inline const T& operator[](size_t idx) const {
+        //    assert(idx < 2);
+        //    return _array[idx];
+        //}
 
         //data intentionally left public to allow vec.x
         union {
+            T _array[2];		// array access
             struct { T x, y; };	// standard names for components
             struct { T u, v; };	// standard names for components
-            T _array[2];		// array access
         };
     };
 
@@ -378,13 +425,20 @@ namespace easy3d {
 
     //---------------- vec3 ------------------------------------------------------------------------
 
+    /**
+     * \brief A 3D vector (used for representing 3D points or vectors).
+     * \tparam T The scalar type of vector elements.
+     *
+     * \class Vec<3, T> easy3d/core/vec.h
+     */
     template <class T>
     class Vec<3, T> {
     public:
         typedef Vec<3, T> thisclass;
+        typedef T         FT;
 
         Vec() : x(0), y(0), z(0) {}
-        Vec(const Vec<2, T>& v, const T& s = 0) : x(v.x), y(v.y), z(s) {} // very useful for promoting to homogeneous coordinates
+        explicit Vec(const Vec<2, T>& v, const T& s = 1) : x(v.x), y(v.y), z(s) {} // very useful for promoting to homogeneous coordinates
         Vec(const Vec<4, T>& v) : x(v.x), y(v.y), z(v.z) {} // very useful for inverse promoting from homogeneous coordinates
 
         Vec(T x_in, T y_in, T z_in) : x(x_in), y(y_in), z(z_in) {}
@@ -443,22 +497,24 @@ namespace easy3d {
         operator const T*() const { return _array; }
         operator T*() { return _array; }
 
-        inline T& operator[](int idx) {
-            assert(idx < 3);
-            return _array[idx];
-        }
-
-        inline const T& operator[](int idx) const {
-            assert(idx < 3);
-            return _array[idx];
-        }
+		// Liangliang: The compiler can't decide whether to use your overloaded 
+		//			   operator[] or the built-in operator[] on the const T*.
+		// See https://stackoverflow.com/questions/1726740/c-error-operator-2-overloads-have-similar-conversions 
+        //inline T& operator[](size_t idx) {
+        //    assert(idx < 3);
+        //    return _array[idx];
+        //}
+		//
+        //inline const T& operator[](size_t idx) const {
+        //    assert(idx < 3);
+        //    return _array[idx];
+        //}
 
         //data intentionally left public to allow vec.x
         union {
-            struct { T x, y, z; };	// standard names for components
-            struct { T u, v, w; };	// standard names for components
-            struct { T r, g, b; };	// standard names for components
             T _array[3];			// array access
+            struct { T x, y, z; };	// standard names for components
+            struct { T r, g, b; };	// standard names for components
         };
     };
 
@@ -503,13 +559,20 @@ namespace easy3d {
 
     // ----------------- vec4 ----------------------------------------------------------------------------------
 
+    /**
+     * \brief A 4D vector (used for representing 3D points or vectors in homogeneous coordinates).
+     * \tparam T The scalar type of vector elements.
+     *
+     * \class Vec<4, T> easy3d/core/vec.h
+     */
     template <class T>
     class Vec<4, T> {
     public:
         typedef Vec<4, T> thisclass;
+        typedef T         FT;
 
         Vec() : x(0), y(0), z(0), w(0) {}
-        Vec(const Vec<3, T>& v, const T& s = 0) : x(v.x), y(v.y), z(v.z), w(s) {} // very useful for promoting to homogeneous coordinates
+        explicit Vec(const Vec<3, T>& v, const T& s = 1) : x(v.x), y(v.y), z(v.z), w(s) {} // very useful for promoting to homogeneous coordinates
         Vec(T x_in, T y_in, T z_in, T w_in) : x(x_in), y(y_in), z(z_in), w(w_in) {}
 
         explicit Vec(const T& s) : x(s), y(s), z(s), w(s) {  }
@@ -566,21 +629,24 @@ namespace easy3d {
         operator const T*() const { return _array; }
         operator T*() { return _array; }
 
-        inline T& operator[](int idx) {
-            assert(idx < 4);
-            return _array[idx];
-        }
-
-        inline const T& operator[](int idx) const {
-            assert(idx < 4);
-            return _array[idx];
-        }
+		// Liangliang: The compiler can't decide whether to use your overloaded 
+		//			   operator[] or the built-in operator[] on the const T*.
+		// See https://stackoverflow.com/questions/1726740/c-error-operator-2-overloads-have-similar-conversions 
+        //inline T& operator[](size_t idx) {
+        //    assert(idx < 4);
+        //    return _array[idx];
+        //}
+		//
+        //inline const T& operator[](size_t idx) const {
+        //    assert(idx < 4);
+        //    return _array[idx];
+        //}
 
         //data intentionally left public to allow vec.x
         union {
+            T _array[4];				// array access
             struct { T x, y, z, w; };	// standard names for components
             struct { T r, g, b, a; };	// standard names for components
-            T _array[4];				// array access
         };
     };
 
@@ -643,6 +709,88 @@ namespace easy3d {
         return in >> v.x >> v.y >> v.z >> v.w;
     }
 
+    //----------------------------------------------------------------------
+
+    template <size_t N, class T>
+    inline bool has_nan(const Vec<N, T> &v) {
+        for (std::size_t i = 0; i < N; ++i) {
+            if (std::isnan(v[i]) || std::isinf(v[i]))
+                return true;
+        }
+        return false;
+    }
+
+    //! return component-wise minimum
+    template <size_t N, class T>
+    inline Vec<N, T> comp_min(const Vec<N, T> &v1, const Vec<N, T> &v2) {
+        Vec<N, T> result;
+        for (int i = 0; i < N; ++i)
+            result[i] = std::min(v1[i], v2[i]);
+        return result;
+    }
+
+    //! return component-wise minimum
+    template <size_t N, class T>
+    inline Vec<N, T> comp_max(const Vec<N, T> &v1, const Vec<N, T> &v2) {
+        Vec<N, T> result;
+        for (int i = 0; i < N; ++i)
+            result[i] = std::max(v1[i], v2[i]);
+        return result;
+    }
+
+
+    template <size_t N, class T>
+    inline bool operator==(const Vec<N,T> &a, const Vec<N,T> &b)
+    {
+        bool t = (a[0] == b[0]);
+        unsigned int i=1;
+        while(i<N && t) {
+            t = t && (a[i]==b[i]);
+            ++i;
+        }
+        return t;
+    }
+
+    template <size_t N, class T>
+    inline bool operator!=(const Vec<N,T> &a, const Vec<N,T> &b)
+    {
+        bool t = (a[0] != b[0]);
+        unsigned int i=1;
+        while(i<N && !t) {
+            t = t || (a[i]!=b[i]);
+            ++i;
+        }
+        return t;
+    }
+
+    // lexicographic comparison
+    template <size_t N, class T>
+    inline bool operator<(const Vec<N,T> &a, const Vec<N,T> &b)
+    {
+        for(unsigned int i=0; i<N; ++i){
+            if(a[i]<b[i]) return true;
+            if(a[i]>b[i]) return false;
+        }
+        return false;
+    }
+
+
+    template <size_t N, class T>
+    inline T min(const Vec<N,T> &a)
+    {
+        T m=a[0];
+        for(unsigned int i=1; i<N; ++i) if(a[i]<m) m=a[i];
+        return m;
+    }
+
+
+    template <size_t N, class T>
+    inline T max(const Vec<N,T> &a)
+    {
+        T m=a[0];
+        for(unsigned int i=1; i<N; ++i) if(a[i]>m) m=a[i];
+        return m;
+    }
 
 #else
 
@@ -733,5 +881,5 @@ namespace easy3d {
 
 }
 
-#endif  // EASY3D_VEC_H
+#endif  // EASY3D_CORE_VEC_H
 

@@ -4,3 +4,10 @@ x64
 *.log
 build
 .DS_Store
+resources/images/img.pptx
+.idea
+cmake-build-debug
+cmake-build-release
+cmake-build-minsizerel
+cmake-build-relwithdebinfo
+.gradle

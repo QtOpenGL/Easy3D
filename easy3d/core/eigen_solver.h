@@ -1,27 +1,26 @@
-/*
-*	Copyright (C) 2015 by Liangliang Nan (liangliang.nan@gmail.com)
-*	https://3d.bk.tudelft.nl/liangliang/
-*
-*	This file is part of Easy3D. If it is useful in your research/work, 
-*   I would be grateful if you show your appreciation by citing it:
-*   ------------------------------------------------------------------
-*           Liangliang Nan. 
-*           Easy3D: a lightweight, easy-to-use, and efficient C++ 
-*           library for processing and rendering 3D data. 2018.
-*   ------------------------------------------------------------------
-*
-*	Easy3D is free software; you can redistribute it and/or modify
-*	it under the terms of the GNU General Public License Version 3
-*	as published by the Free Software Foundation.
-*
-*	Easy3D is distributed in the hope that it will be useful,
-*	but WITHOUT ANY WARRANTY; without even the implied warranty of
-*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*	GNU General Public License for more details.
-*
-*	You should have received a copy of the GNU General Public License
-*	along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+/**
+ * Copyright (C) 2015 by Liangliang Nan (liangliang.nan@gmail.com)
+ * https://3d.bk.tudelft.nl/liangliang/
+ *
+ * This file is part of Easy3D. If it is useful in your research/work,
+ * I would be grateful if you show your appreciation by citing it:
+ * ------------------------------------------------------------------
+ *      Liangliang Nan.
+ *      Easy3D: a lightweight, easy-to-use, and efficient C++
+ *      library for processing and rendering 3D data. 2018.
+ * ------------------------------------------------------------------
+ * Easy3D is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License Version 3
+ * as published by the Free Software Foundation.
+ *
+ * Easy3D is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /** ----------------------------------------------------------
  * The code is adapted from Magic Software with significant
@@ -39,9 +38,8 @@
  *              http://www.magic-software.com/License/free.pdf
  *----------------------------------------------------------*/
 
-
-#ifndef EASY3D_EIGEN_SOLVER_H
-#define EASY3D_EIGEN_SOLVER_H
+#ifndef EASY3D_CORE_EIGEN_SOLVER_H
+#define EASY3D_CORE_EIGEN_SOLVER_H
 
 #include <cmath>
 #include <cassert>
@@ -49,29 +47,33 @@
 
 namespace easy3d {
 
+    /// \brief An easy-to-use eigen solver.
+    /// \class EigenSolver easy3d/core/eigen_solver.h
     template <typename FT>
     class EigenSolver
     {
     public:
+        /// \brief The sorting method for the eigenvalues and their corresponding eigen vectors.
         enum SortingMethod { NO_SORTING, INCREASING, DECREASING };
 
     public:
+        /// \brief Default constructor
         /// @param n: the size of the input matrix
         EigenSolver(int n);
         ~EigenSolver();
 
-        /// solve
+        /// \brief Computes the eigenvalues and eigenvectors of the input matrix \p mat.
         /// @param mat: the input matrix (row major 2D array)
         void solve(FT** mat, SortingMethod sm = NO_SORTING);
 
-        /// the i_th eigenvalue
+        /// \brief Returns the i_th eigenvalue.
         FT eigen_value(int i) const { return diag_[i]; }
-        /// the comp_th component of the i_th eigenvector
+        /// \brief Returns the \p comp_th component of the \p i_th eigenvector.
         FT eigen_vector(int comp, int i) const { return matrix_[comp][i]; }
 
-        /// the eigenvalues
+        /// \brief Returns the eigenvalues.
         FT* eigen_values() { return diag_; }
-        /// the eigenvectors (stored as the columns of the returned matrix)
+        /// \brief Returns the eigenvectors (stored as the columns of the returned matrix).
         FT** eigen_vectors() { return matrix_; }
 
     protected:
@@ -627,4 +629,4 @@ namespace easy3d {
 
 }
 
-#endif  // EASY3D_EIGEN_SOLVER_H
+#endif  // EASY3D_CORE_EIGEN_SOLVER_H

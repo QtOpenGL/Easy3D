@@ -1,31 +1,29 @@
-/*
-*	Copyright (C) 2015 by Liangliang Nan (liangliang.nan@gmail.com)
-*	https://3d.bk.tudelft.nl/liangliang/
-*
-*	This file is part of Easy3D. If it is useful in your research/work, 
-*   I would be grateful if you show your appreciation by citing it:
-*   ------------------------------------------------------------------
-*           Liangliang Nan. 
-*           Easy3D: a lightweight, easy-to-use, and efficient C++ 
-*           library for processing and rendering 3D data. 2018.
-*   ------------------------------------------------------------------
-*
-*	Easy3D is free software; you can redistribute it and/or modify
-*	it under the terms of the GNU General Public License Version 3
-*	as published by the Free Software Foundation.
-*
-*	Easy3D is distributed in the hope that it will be useful,
-*	but WITHOUT ANY WARRANTY; without even the implied warranty of
-*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*	GNU General Public License for more details.
-*
-*	You should have received a copy of the GNU General Public License
-*	along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+/**
+ * Copyright (C) 2015 by Liangliang Nan (liangliang.nan@gmail.com)
+ * https://3d.bk.tudelft.nl/liangliang/
+ *
+ * This file is part of Easy3D. If it is useful in your research/work,
+ * I would be grateful if you show your appreciation by citing it:
+ * ------------------------------------------------------------------
+ *      Liangliang Nan.
+ *      Easy3D: a lightweight, easy-to-use, and efficient C++
+ *      library for processing and rendering 3D data. 2018.
+ * ------------------------------------------------------------------
+ * Easy3D is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License Version 3
+ * as published by the Free Software Foundation.
+ *
+ * Easy3D is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-
-#ifndef EASY3D_PRINCIPAL_AXIS_H
-#define EASY3D_PRINCIPAL_AXIS_H
+#ifndef EASY3D_CORE_PRINCIPAL_AXIS_H
+#define EASY3D_CORE_PRINCIPAL_AXIS_H
 
 #include <easy3d/core/types.h>
 
@@ -33,12 +31,11 @@
 namespace easy3d {
 
     /**
-    * PrincipalAxes computes the center and inertia axes of
-    * a set of 2D or 3D points.
-    * @tparam DIM dimension (must be 2 or 3)
-    */
-
-    //NOTE: 2D cases has not been tested!!!
+     * \brief Computes the center and inertia axes of a set of 2D or 3D points.
+     * \tparam DIM dimension (must be 2 or 3).
+     * \class PrincipalAxes easy3d/core/principal_axes.h
+     * \todo Test 2D cases.
+     */
 
     template <int DIM, typename FT>
     class PrincipalAxes {
@@ -46,20 +43,25 @@ namespace easy3d {
         PrincipalAxes();
         ~PrincipalAxes();
 
-        // add point one by one
+        /// \brief Begins adding points.
         void begin();
+        /// \brief Adds a point \p p with a \p weight.
         void add_point(const Vec<DIM, FT>& p, FT weight = FT(1.0));
+        /// \brief Ends adding points.
         void end();
 
-        // add a set of point (it internally calls add_point())
+        /// \brief Adds a set of points (internally it iteratively calls add_point())
         template <typename InputIterator>
         void add_points(InputIterator first, InputIterator last);
 
+        /// \brief The weighted average of the points.
         Vec<DIM, FT> center() const;
 
-        // eigen values are sorted in descending order,
-        // eigen vectors are sorted in accordance.
+        /// \brief The \p i_th axis
+        /// \note The eigenvectors are sorted in accordance with eigenvalues stored in the descending order.
         Vec<DIM, FT> axis(int i) const;
+        /// \brief The \p i_th eigenvalue.
+        /// \note The eigenvalues are sorted in descending order.
         FT eigen_value(int i) const ;
 
     private:
@@ -208,6 +210,5 @@ namespace easy3d {
 } // namespace easy3d
 
 
-
-#endif
+#endif  // EASY3D_CORE_PRINCIPAL_AXIS_H
 

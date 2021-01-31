@@ -1,31 +1,29 @@
-/*
-*	Copyright (C) 2015 by Liangliang Nan (liangliang.nan@gmail.com)
-*	https://3d.bk.tudelft.nl/liangliang/
-*
-*	This file is part of Easy3D. If it is useful in your research/work, 
-*   I would be grateful if you show your appreciation by citing it:
-*   ------------------------------------------------------------------
-*           Liangliang Nan. 
-*           Easy3D: a lightweight, easy-to-use, and efficient C++ 
-*           library for processing and rendering 3D data. 2018.
-*   ------------------------------------------------------------------
-*
-*	Easy3D is free software; you can redistribute it and/or modify
-*	it under the terms of the GNU General Public License Version 3
-*	as published by the Free Software Foundation.
-*
-*	Easy3D is distributed in the hope that it will be useful,
-*	but WITHOUT ANY WARRANTY; without even the implied warranty of
-*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-*	GNU General Public License for more details.
-*
-*	You should have received a copy of the GNU General Public License
-*	along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+/**
+ * Copyright (C) 2015 by Liangliang Nan (liangliang.nan@gmail.com)
+ * https://3d.bk.tudelft.nl/liangliang/
+ *
+ * This file is part of Easy3D. If it is useful in your research/work,
+ * I would be grateful if you show your appreciation by citing it:
+ * ------------------------------------------------------------------
+ *      Liangliang Nan.
+ *      Easy3D: a lightweight, easy-to-use, and efficient C++
+ *      library for processing and rendering 3D data. 2018.
+ * ------------------------------------------------------------------
+ * Easy3D is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License Version 3
+ * as published by the Free Software Foundation.
+ *
+ * Easy3D is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-
-#ifndef EASY3D_RANDOM_H
-#define EASY3D_RANDOM_H
+#ifndef EASY3D_CORE_RANDOM_H
+#define EASY3D_CORE_RANDOM_H
 
 #include <random>
 
@@ -35,21 +33,20 @@
 namespace easy3d {
 
 
-    /* Random real in [0, 1]. */
+    /** \brief Random real in [0, 1]. */
     inline float random_float() {
         return float(std::rand()) / float(RAND_MAX);
     }
 
-    /* Random real number in the range [min, max] */
+    /** \brief Random real number in the range [min, max]. */
     inline float random_float(float min, float max) {
         return min + random_float() * (max - min);
     }
 
+    /** \brief Generates a random color. The parameter \p allow_dark controls if too dark colors are allowed. */
     inline vec3 random_color(bool allow_dark = false) {
-        float min_rgb = 0.3f;
-        if (allow_dark)
-            min_rgb = 0.0f;
-
+        static float min_rgb = 0.3f;
+        min_rgb = allow_dark ? 0.0f : min_rgb;
         return vec3(
             random_float(min_rgb, 1.0f),
             random_float(min_rgb, 1.0f),
@@ -60,4 +57,4 @@ namespace easy3d {
 }
 
 
-#endif // EASY3D_RANDOM_H
+#endif // EASY3D_CORE_RANDOM_H
